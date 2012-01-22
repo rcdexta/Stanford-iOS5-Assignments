@@ -11,12 +11,21 @@
 
 @interface CalculatorBrain()
 @property (nonatomic,strong) NSMutableArray *programStack;
-
+@property (nonatomic, strong) NSMutableDictionary *testVariables;
+@property (nonatomic, strong) NSNumberFormatter *numberFormatter;
 @end
 
 @implementation CalculatorBrain
 
 @synthesize programStack = _programStack;
+@synthesize testVariables = _testVariables;
+@synthesize numberFormatter = _numberFormatter;
+
+- (NSNumberFormatter *)numberFormatter
+{
+    if (!_numberFormatter) _numberFormatter = [[NSNumberFormatter alloc] init];
+    return _numberFormatter;
+}
 
 - (NSMutableArray *)programStack
 {
@@ -24,20 +33,36 @@
     return _programStack;
 }
 
+- (NSDictionary *)testVariables
+{
+    if (!_testVariables) _testVariables = [[NSMutableDictionary alloc] init];
+    return _testVariables;
+}
+
+- (void)setVariable:(NSString *)variable withValue:(double)value
+{
+    [self.testVariables setValue:[NSNumber numberWithDouble:value] forKey:variable];
+}
+
 - (void)clear
 {
     [self.programStack removeAllObjects];
 }
 
-- (void) pushOperand:(double)operand
+- (void) pushOperand:(NSString *)operand
 {
-    [self.programStack addObject:[NSNumber numberWithDouble:operand]];
+    if ([self.numberFormatter numberFromString:operand]){
+        [self.programStack addObject:[NSNumber numberWithDouble:[operand doubleValue]]];
+    } else {
+        [self.programStack addObject:operand];
+    }
+    
 }
 
 - (double)performOperation:(NSString *)operation
 {
     [self.programStack addObject:operation];
-    return [CalculatorBrain runProgram:self.program];
+    return [CalculatorBrain runProgram:self.program usingVariableValues:self.testVariables];
 }
 
 - (id)program
@@ -88,25 +113,35 @@
         else if ([@"π" isEqualToString:operation]){
             result = M_PI;
         }
-        else if ([@"e" isEqualToString:operation]){
-            result = M_E;
-        }
-        else if ([@"ln" isEqualToString:operation]){
-            result = log([self popOperandOffStack:stack]);
-        }
-
     }
     
     return result;
 }
 
-+ (double)runProgram:(id)program   
++ (double)runProgram:(id)program usingVariableValues:(NSDictionary *)variableValues
 {
     NSMutableArray *stack;
     if ([program isKindOfClass:[NSArray class]]){
         stack = [program mutableCopy];
     }
+    
+    NSArray *variables = [variableValues allKeys];
+    
+    for(int index=0;index<stack.count;index++){
+        id element = [stack objectAtIndex:index];
+        if ([element isKindOfClass:[NSString class]] && //operator or variable maybe..
+            [variables containsObject:element]) //definitely variable
+        { 
+            [stack replaceObjectAtIndex:index withObject:[variableValues objectForKey:element]];
+        }
+    }
+    
     return [self popOperandOffStack:stack];
+}
+
++ (NSSet *)variablesUsedInProgram:(id)program
+{
+    return [[NSSet alloc]init];
 }
 
 @end

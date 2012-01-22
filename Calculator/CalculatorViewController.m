@@ -10,6 +10,7 @@
 
 @interface CalculatorViewController()
 @property (nonatomic) BOOL userIsInTheMiddleOfEnteringNumber;
+
 - (BOOL)containsDecimalPoint:(NSString *)number;
 - (void)appendToHistory:(NSString *)literal;
 - (void)appendToHistoryWithEquals:(NSString *)literal;
@@ -21,12 +22,21 @@
 @synthesize history = _history;
 @synthesize display = _display;
 @synthesize userIsInTheMiddleOfEnteringNumber = _userIsInTheMiddleOfEnteringNumber;
+
 @synthesize brain = _brain;
+
+
 
 - (CalculatorBrain *) brain
 {
     if (!_brain) _brain = [[CalculatorBrain alloc] init];
     return _brain;
+}
+
+- (IBAction)testVarsPressed:(id)sender {
+    [self.brain setVariable:@"a" withValue:1];
+    [self.brain setVariable:@"b" withValue:2];
+    [self.brain setVariable:@"x" withValue:3];
 }
 
 - (IBAction)digitPressed:(UIButton  *)sender 
@@ -53,7 +63,7 @@
 }
 
 - (IBAction)enterPressed {
-    [self.brain pushOperand:[self.display.text doubleValue]];
+    [self.brain pushOperand:self.display.text];
     [self appendToHistory:self.display.text];
     self.userIsInTheMiddleOfEnteringNumber = FALSE;
 }
@@ -61,11 +71,6 @@
 - (IBAction)backspacePressed {
     if ([self.display.text length] > 0 && self.userIsInTheMiddleOfEnteringNumber)
         self.display.text = [self.display.text substringToIndex:[self.display.text length] - 1];
-}
-
-- (IBAction)changeSignPressed {
-    double signToggledValue = [self.display.text doubleValue] * -1;
-    self.display.text = [NSString stringWithFormat:@"%g", signToggledValue];
 }
 
 
