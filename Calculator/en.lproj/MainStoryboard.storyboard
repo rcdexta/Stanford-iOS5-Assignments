@@ -463,12 +463,20 @@
                                     <action selector="testVarsPressed:" destination="2" eventType="touchUpInside" id="1NG-OG-B8L"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="" lineBreakMode="tailTruncation" minimumFontSize="10" id="MJ9-At-UyD">
+                                <rect key="frame" x="19" y="433" width="292" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <connections>
                         <outlet property="display" destination="AIs-rk-IrW" id="SKp-Dd-QFT"/>
                         <outlet property="history" destination="ULN-Gb-LxG" id="LWb-5D-i4i"/>
+                        <outlet property="testVariablesDisplay" destination="MJ9-At-UyD" id="Tn5-2W-gy6"/>
                     </connections>
                 </viewController>
             </objects>
@@ -481,6 +489,8 @@
             <relationships>
                 <relationship kind="outlet" name="display" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="history" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="testVariablesDisplay" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="variables" candidateClass="UILabel"/>
             </relationships>
         </class>
     </classes>
